@@ -1,0 +1,9 @@
+10001,Math,false,3.4
+10001,Physics,true,3.6
+10002,History of Art,false,2.8
+10002,Political Science,true,3.5
+10002,French Literature,true,3.1
+10003,Math,true,3.8
+10003,Physics,true,3.9
+10003,Quantum Mechanics,true,3.7
+10003,Astro-Physics,true,3.8
