@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,7 @@ class StudentGradeRecord {
 
 public class School {
     public static void populateStudentsWithCourses(Map<Integer, Student> map, String filename) throws IOException {
-        try (BufferedReader br = Files.newBufferedReader(Path.of(filename))) {
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String [] elements = line.split(",");
@@ -51,7 +52,7 @@ public class School {
 
     public static Map<Integer, Student> makeStudents(String filename) throws IOException {
         Map<Integer, Student> rv = new HashMap<>();
-        try (BufferedReader br = Files.newBufferedReader(Path.of(filename));) {
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(filename));) {
             int records = Integer.parseInt(br.readLine());
             while (records-- > 0) {
                 String line = br.readLine();
@@ -75,7 +76,7 @@ public class School {
                 record.addGPA(c.getGrade());
             }
         }
-        return new ArrayList(recordMap.values());
+        return new ArrayList<>(recordMap.values());
     }
 
     public static void main(String[] args) throws Throwable {

@@ -1,6 +1,7 @@
 package students;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Student {
@@ -11,7 +12,7 @@ public class Student {
     public Student(String name, int id, Course ... courses) {
         this.name = name;
         this.id = id;
-        this.courses = new ArrayList<>(List.of(courses));
+        this.courses = new ArrayList<>(Arrays.asList(courses));
     }
 
     public String getName() {
