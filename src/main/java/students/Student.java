@@ -3,6 +3,7 @@ package students;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Student {
     private String name;
@@ -15,24 +16,29 @@ public class Student {
         this.courses = new ArrayList<>(Arrays.asList(courses));
     }
 
-    public String getName() {
-        return name;
+    public Student(String name, int id, List<Course> courses) {
+       this.name = name;
+       this.id = id;
+       this.courses = courses;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getName() {
+        return name;
     }
 
     public int getId() {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    /***
+     * Return a copy of the Course list
+     * @return
+     */
     public List<Course> getCourses() {
-        return courses;
+       if(courses != null)
+          return courses.stream().map(c -> c.clone()).collect(Collectors.toList());
+       else
+          return new ArrayList<Course>();
     }
 
     public void addCourse(Course course) {

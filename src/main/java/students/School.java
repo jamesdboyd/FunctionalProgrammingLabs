@@ -1,88 +1,48 @@
 package students;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-class StudentGradeRecord {
-    private int id;
-    private String name;
-    private double gpaSum;
-    private int gpaCount;
-
-    public StudentGradeRecord(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public void addGPA(double gpa) {
-        gpaSum += gpa;
-        gpaCount++;
-    }
-
-    @Override
-    public String toString() {
-        return "StudentGradeRecord{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                (gpaCount > 0 ? ", gpaAverage=" + (gpaSum / gpaCount) : ", no courses") +
-                '}';
-    }
-}
+import java.util.Map.Entry;
 
 public class School {
-    public static void populateStudentsWithCourses(Map<Integer, Student> map, String filename) throws IOException {
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(filename))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String [] elements = line.split(",");
-                int id = Integer.parseInt(elements[0]);
-                Student s = map.get(id);
-                double gpa = Double.parseDouble(elements[3]);
-                s.addCourse(new Course(elements[1], Boolean.parseBoolean(elements[2]), gpa));
-            }
-        }
+
+    public List<StudentGradeRecord> getGPAs() {
+       List<StudentGradeRecord> recordList = new ArrayList<>();
+       for( Entry<Integer, Student> e : ModelFactory.INST.getStudentMap().entrySet())
+       {
+          double total = e.getValue().getCourses().stream().mapToDouble(c -> c.getGrade()).sum();
+          double avg = 0.0;
+          if( e.getValue().getCourses().size() > 0)
+             avg = total / e.getValue().getCourses().size();
+          StudentGradeRecord sr = new StudentGradeRecord(e.getValue().getId(), e.getValue().getName(), avg);
+          recordList.add(sr);
+       }
+       return recordList;
     }
-
-    public static Map<Integer, Student> makeStudents(String filename) throws IOException {
-        Map<Integer, Student> rv = new HashMap<>();
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(filename));) {
-            int records = Integer.parseInt(br.readLine());
-            while (records-- > 0) {
-                String line = br.readLine();
-                String[] elements = line.split(",");
-                int id = Integer.parseInt(elements[1]);
-                rv.put(id, new Student(elements[0], id));
-            }
-            return rv;
-        }
-    }
-
-    public static List<StudentGradeRecord> getGPAs() throws IOException {
-        Map<Integer, Student> roster = makeStudents("StudentData.txt");
-        populateStudentsWithCourses(roster, "CourseGradeData.txt");
-
-        Map<Integer, StudentGradeRecord> recordMap = new HashMap<>();
-        for (Student s : roster.values()) {
-            StudentGradeRecord record = new StudentGradeRecord(s.getId(), s.getName());
-            recordMap.put(s.getId(), record);
-            for (Course c : s.getCourses()) {
-                record.addGPA(c.getGrade());
-            }
-        }
-        return new ArrayList<>(recordMap.values());
+    
+    public StudentGradeRecord getGPA(int studentId) {
+       StudentGradeRecord sgr = null;
+       Student s = ModelFactory.INST.getStudentMap().get(studentId);
+       if(s != null)
+       {
+          double total = s.getCourses().stream().mapToDouble(c -> c.getGrade()).sum();
+          double avg = 0.0;
+          if( s.getCourses().size() > 0)
+             avg = total / s.getCourses().size();
+          sgr = new StudentGradeRecord(s.getId(), s.getName(), avg);
+       }
+       return sgr;
     }
 
     public static void main(String[] args) throws Throwable {
-        List<StudentGradeRecord> gradeRecords = getGPAs();
+        ModelFactory.INST.initialize();
+        School s = new School();
+        List<StudentGradeRecord> gradeRecords = s.getGPAs();
         for (StudentGradeRecord sgr : gradeRecords) {
             System.out.println(sgr);
         }
+        StudentGradeRecord sgr = s.getGPA(10002);
+        if(sgr != null)
+           System.out.println(sgr.toString());
     }
 }

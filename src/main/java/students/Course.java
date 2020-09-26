@@ -17,24 +17,16 @@ public class Course {
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public boolean isComplete() {
         return complete;
-    }
-
-    public void setComplete(boolean complete) {
-        this.complete = complete;
     }
 
     public double getGrade() {
         return grade;
     }
-
-    public void setGrade(double grade) {
-        this.grade = grade;
+    
+    public Course clone() {
+       return new Course(title, complete, grade);
     }
 
     @Override
